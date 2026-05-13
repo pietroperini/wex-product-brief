@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using ProductBrief.Configurations;
 using ProductBrief.Models;
 using System.Collections.Concurrent;
@@ -7,12 +8,13 @@ using System.Text.Json;
 
 namespace ProductBrief.Services;
 
-public class TreasuryExchangeRateService(IHttpClientFactory httpClientFactory, IOptions<TreasuryApiSettings> settings, JsonSerializerOptions options) : ITreasuryExchangeRateService
+public class TreasuryExchangeRateService(IHttpClientFactory httpClientFactory, IMemoryCache exchangeRateCache, IOptions<TreasuryApiSettings> settings, JsonSerializerOptions options) : ITreasuryExchangeRateService
 {
     private readonly IHttpClientFactory _httpClientFactory = httpClientFactory;
+    private readonly IMemoryCache _exchangeRateCache = exchangeRateCache;
     private const string HttpClientName = "TreasuryApi";
     private readonly TreasuryApiSettings _settings = settings.Value;
-    private readonly ConcurrentDictionary<string, CacheEntry<decimal>> _exchangeRateCache = new();
+    
 
     public async Task<decimal> GetExchangeRateAsync(string currencyCode, DateTime transactionDate)
     {
@@ -21,10 +23,10 @@ public class TreasuryExchangeRateService(IHttpClientFactory httpClientFactory, I
             // Create cache key from currency code and transaction date
             var cacheKey = $"{currencyCode}_{transactionDate:yyyy-MM-dd}";
 
-            // Check if rate exists in cache and is not expired
-            if (_exchangeRateCache.TryGetValue(cacheKey, out var cachedEntry) && !cachedEntry.IsExpired)
+            // Check if rate exists in cache
+            if (_exchangeRateCache.TryGetValue(cacheKey, out decimal cachedEntry))
             {
-                return cachedEntry.Value;
+                return cachedEntry;
             }
 
             // Calculate the date range: transaction date to lookbackMoths before
@@ -48,11 +50,11 @@ public class TreasuryExchangeRateService(IHttpClientFactory httpClientFactory, I
                 var rate = decimal.Parse(content.Data[0].Exchange_Rate, CultureInfo.InvariantCulture);
 
                 // Store in cache
-                _exchangeRateCache[cacheKey] = new CacheEntry<decimal>
+                _exchangeRateCache.Set(cacheKey, new CacheEntry<decimal>
                 {
                     Value = rate,
                     ExpirationTime = DateTime.UtcNow.AddMinutes(_settings.CacheTtlMinutes)
-                };
+                });
 
                 return rate;
             }

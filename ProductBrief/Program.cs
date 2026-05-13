@@ -17,6 +17,7 @@ builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 builder.Services.AddSwaggerGen();
+builder.Services.AddMemoryCache();
 
 builder.Services.AddDbContext<PurchaseTransactionDbContext>(options =>
     options.UseSqlite("Data Source=wex_product_brief.db"));
