@@ -127,6 +127,13 @@ StyleCopReport.xml
 *.svclog
 *.scc
 
+# SQLite database files
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+*.sqlite3
+
 # Chutzpah Test files
 _Chutzpah*
 
