@@ -20,7 +20,7 @@ It’s not meant to be a full production system, but it follows patterns that wo
 
 ## Tech stack
 
-- .NET 8 (ASP.NET Core Web API)
+- .NET 10 (ASP.NET Core Web API)
 - Entity Framework Core
 - SQLite
 - System.Text.Json
@@ -41,7 +41,8 @@ Run it:
 ```bash
 dotnet restore
 dotnet build
-dotnet run --project src/WexProductBrief.Api
+dotnet test
+dotnet run --project ProductBrief\ProductBrief.csproj
 ```
 
 The API should start on the default localhost ports.
@@ -116,18 +117,6 @@ SQLite is used just to keep things simple.
 - DB is created automatically on startup
 - no setup required
 - data is persisted locally in a file
-
----
-
-## Structure
-
-The project is split roughly like this:
-
-```text
-Controllers → Application services → Data access (EF Core)
-```
-
-Controllers are kept thin, most of the logic is in services/facades.
 
 ---
 
