@@ -9,7 +9,7 @@ namespace ProductBrief.Controllers;
 
 
 [ApiController]
-[Route("[controller]")]
+[Route("api/[controller]")]
 public class PurchaseTransactionController(
     IValidator<CreatePurchaseTransactionRequest> validator,
     IPurchaseTransactionFacade purchaseTransactionFacade,

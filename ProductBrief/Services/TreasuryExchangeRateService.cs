@@ -50,11 +50,7 @@ public class TreasuryExchangeRateService(IHttpClientFactory httpClientFactory, I
                 var rate = decimal.Parse(content.Data[0].Exchange_Rate, CultureInfo.InvariantCulture);
 
                 // Store in cache
-                _exchangeRateCache.Set(cacheKey, new CacheEntry<decimal>
-                {
-                    Value = rate,
-                    ExpirationTime = DateTime.UtcNow.AddMinutes(_settings.CacheTtlMinutes)
-                });
+                _exchangeRateCache.Set(cacheKey, rate, TimeSpan.FromMinutes(_settings.CacheTtlMinutes));
 
                 return rate;
             }
