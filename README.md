@@ -45,7 +45,44 @@ dotnet test
 dotnet run --project ProductBrief\ProductBrief.csproj
 ```
 
-The API should start on the default localhost ports.
+launchSettings.json
+
+```json
+"profiles": {
+  "http": {
+    "commandName": "Project",
+    "environmentVariables": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    },
+    "dotnetRunMessages": true,
+    "applicationUrl": "http://localhost:5180"
+  },
+  "https": {
+    "commandName": "Project",
+    "environmentVariables": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    },
+    "dotnetRunMessages": true,
+    "applicationUrl": "https://localhost:7065;http://localhost:5180"
+  },   
+  "IIS Express": {
+    "commandName": "IISExpress",
+    "launchBrowser": true,
+    "environmentVariables": {
+      "ASPNETCORE_ENVIRONMENT": "Development"
+    }
+  }
+},
+"$schema": "https://json.schemastore.org/launchsettings.json",
+"iisSettings": {
+  "windowsAuthentication": false,
+  "anonymousAuthentication": true,
+  "iisExpress": {
+    "applicationUrl": "http://localhost:32419/",
+    "sslPort": 44320
+  }
+}
+```
 
 ---
 
